@@ -11,7 +11,7 @@ const SuccessScreen = () => {
       <Text style={styles.title}>Click next to continue.................</Text>
       <Button
         title="Next"
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('ImagePicker')}
         color="green"
       />
     </View>

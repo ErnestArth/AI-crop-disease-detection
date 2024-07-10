@@ -2,9 +2,10 @@ import {StyleSheet, View, Image,Text, TouchableOpacity, SafeAreaView, ImageBackg
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomButton from "./Button";
-import SignupScreen from "./Screens/Sign-Up";
+import SignupScreen from "./Screens/Signup";
 import LoginScreen from "./Screens/Login";
-import SuccessScreen from "./Screens/SuccessScreen";
+import SuccessScreen from "./Screens/successScreen";
+import ImagePickerScreen from "./Screens/ImagePickerScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,7 @@ export default function App() {
         <Stack.Screen name="Sign-Up" component={SignupScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Success" component={SuccessScreen} />
+        <Stack.Screen name="ImagePicker" component={ImagePickerScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -50,13 +52,14 @@ const styles = StyleSheet.create({
   },
   image: {
     height: '70%',
-    flex: 1
+    flex: 1,
   },
   buttonContainer: {
     width: '100%',
     padding: 20,
     backgroundColor: 'white',
     alignItems: 'center',
+    // borderTopLeftRadius: 40
   },
   signUpButton: {
     backgroundColor: 'green',

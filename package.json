@@ -15,8 +15,11 @@
   "dependencies": {
     "@expo/metro-runtime": "~3.2.1",
     "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-picker/picker": "2.7.5",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.10.0",
+    "@teachablemachine/image": "^0.8.5",
+    "@tensorflow/tfjs": "^4.20.0",
     "expo": "^51.0.18",
     "expo-image-picker": "~15.0.7",
     "react": "18.2.0",

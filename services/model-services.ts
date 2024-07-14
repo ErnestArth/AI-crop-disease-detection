@@ -1,15 +1,15 @@
-import * as tf from "@tensorflow/tfjs";
-import * as tmImage from "@teachablemachine/image";
+// import * as tf from "@tensorflow/tfjs";
+import * as tmImage from '@teachablemachine/image';
 import {
   CropType,
   DiseaseClass,
-  DiseaseInfo,
   InputImage,
+  PredictionResults,
   ProcessedImage,
   TeachableMachinePrediction,
   TeachableMachinePredictions,
-} from "./types";
-import { getDiseaseInfo } from "./utils";
+} from './types';
+import {getDiseaseInfo} from './utils';
 
 interface Prediction {
   diseaseClass: DiseaseClass;
@@ -17,10 +17,10 @@ interface Prediction {
 }
 
 const processImageURIForTeachableMachineModel = (
-  imageURI: string
+  imageURI: string,
 ): HTMLImageElement => {
   const imageElement = new Image();
-  imageElement.setAttribute("src", imageURI);
+  imageElement.setAttribute('src', imageURI);
   return imageElement;
 };
 
@@ -34,21 +34,21 @@ const preprocess = (image: InputImage): ProcessedImage => {
 
 const loadTeachableMachineModel = async (cropType: CropType) => {
   const basePath = `/services/artefacts/${cropType}-model/`;
-  const modelPath = basePath + "model.json";
-  const metadataPath = basePath + "metadata.json";
+  const modelPath = basePath + 'model.json';
+  const metadataPath = basePath + 'metadata.json';
   return await tmImage.load(modelPath, metadataPath);
 };
 
 const getBestTeachableMachinePrediction = (
-  predictions: TeachableMachinePredictions
+  predictions: TeachableMachinePredictions,
 ): TeachableMachinePrediction => {
   return predictions.sort((a, b) =>
-    a.probability < b.probability ? -1 : a.probability == b.probability ? 0 : 1
+    a.probability < b.probability ? -1 : a.probability == b.probability ? 0 : 1,
   )[predictions.length - 1];
 };
 
 const processTeachableMachinePredictions = (
-  predictions: TeachableMachinePredictions
+  predictions: TeachableMachinePredictions,
 ) => {
   const bestPrediction = getBestTeachableMachinePrediction(predictions);
   return {
@@ -59,7 +59,7 @@ const processTeachableMachinePredictions = (
 
 const makePrediction = async (
   image: ProcessedImage,
-  cropType: CropType
+  cropType: CropType,
 ): Promise<Prediction> => {
   const model = await loadTeachableMachineModel(cropType);
   const modelPredictions = await model.predict(image);
@@ -69,8 +69,14 @@ const makePrediction = async (
 
 export const getPredictionResults = async (
   imageURI: string,
-  cropType: CropType
-) => {
+  cropType: CropType,
+): Promise<PredictionResults> => {
+  // return {
+  //   disease: 'Disease name',
+  //   accuracy: '99.9 %',
+  //   diseaseDescription: 'some description',
+  //   suggestedTreatment: 'some treatment',
+  // };
   const inputImage = processImageURI(imageURI);
 
   const processedImage = preprocess(inputImage);

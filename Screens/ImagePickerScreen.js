@@ -2,10 +2,13 @@
 import React, { useState } from 'react';
 import { Button, Image, View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import useStore from '../lib/store';
 
-export default function ImagePickerScreen() {
+const ImagePickerScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
-  const [recents, setRecents] = useState([]);
+  const {imageUri,setImageUri}= useStore()
+  
+  // const [recents, setRecents] = useState([]);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -20,10 +23,16 @@ export default function ImagePickerScreen() {
       aspect: [4, 3],
       quality: 1,
     });
+    console.log(result);
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      setRecents(prev => [result.assets[0].uri, ...prev]);
+        setImage(result.assets[0].uri);
+        // setImageUri(image)
+
+      // console.log(imageUri);
+      // setRecents(prev => [result.assets[0].uri, ...prev]);
+      console.log("Image URI:", result.uri); // Debug log
+      // navigation.navigate('ImageProcessing', { imageUri: result.assets[0].uri });
     }
   };
 
@@ -42,13 +51,69 @@ export default function ImagePickerScreen() {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      setRecents(prev => [result.assets[0].uri, ...prev]);
+      console.log(image);
+      // setRecents(prev => [result.assets[0].uri, ...prev]);
+      
+     
     }
   };
+const predict =async()=> {
+  //retrieve image state
+  //sends a request to the endpoint
+  //res> json 
 
-const renderItem = ({ item }) => (
-    <Image source={require('../assets/crop.jpeg')} style={styles.recentImage} />
-);
+
+  const res = {
+    data:'prediction'
+  }
+
+  navigation.navigate('ImageProcessing', { imageUri: image,data: res.data });
+
+
+
+}
+const handlePrediction = async () => {
+  setLoading(true);
+  console.log("Image URI for prediction:", imageUri);
+
+  try {
+    // Example: Convert image to base64
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = async () => {
+      const base64data = reader.result;
+      
+      // Send image data to prediction API
+      const predictionResponse = await fetch('YOUR_PREDICTION_API_URL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ image: base64data }),
+      });
+
+      const predictionData = await predictionResponse.json();
+      setPredictionResult(predictionData);
+      setLoading(false);
+
+      // Example: Navigate to result screen with prediction data
+      navigation.navigate('ImageProcessing', { imageUri: image,data: predictionData  });
+    };
+  } catch (error) {
+    console.error("Error during prediction:", error);
+    setLoading(false);
+  }
+};
+// const navigateToPredictScreen = () => {
+//   console.log('Navigating to Predict Screen with imageUri:');
+//   navigation.navigate('Predict');
+// };  
+
+// const renderItem = ({ item }) => (
+//     <Image source={require('../assets/crop.jpeg')} style={styles.recentImage} />
+// );
 
   return (
     <View style={styles.container}>
@@ -60,18 +125,23 @@ const renderItem = ({ item }) => (
       </View>
       <View style={styles.uploadSection}>
         <Text style={styles.uploadText}>Upload photo</Text>
-        <Button title="Choose file" onPress={pickImage} color="green" />
+        <TouchableOpacity style={styles.chooseButton} onPress={pickImage}>
+          <Text style={styles.chooseButtonText}>Choose File</Text>
+        </TouchableOpacity>
       </View>
       {image && <Image source={{ uri: image }} style={styles.image} />}
-      <View style={styles.recents}>
-        <Text style={styles.recentsText}>Recents</Text>
-        {/* Add recent photos or placeholders here */}
-        <FlatList
+      <View >
+        {/* <Text style={styles.recentsText}>Recents</Text>
+        Add recent photos or placeholders here */}
+        {/* <FlatList
           data={recents}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           horizontal
-        />
+        /> */}
+        <TouchableOpacity style={styles.predictButton} onPress={predict}>
+          <Text  style={styles.predictButtonText}>Predict</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -88,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#2e7d32',
     padding: 20,
-    height: '55%',
+    height: '40%',
     borderBottomEndRadius: 20,
     borderBottomLeftRadius: 20,
   },
@@ -114,22 +184,54 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: {
-    width: 200,
-    height: 500,
+    width: 300,
+    height: 300,
     alignSelf: 'center',
-    margin: 20,
+    margin: 5,
   },
-  recents: {
-    flex: 2,
-    padding: 20,
+  // recents: {
+  //   flex: 2,
+  //   padding: 20,
+  // },
+  // recentsText: {
+  //   fontSize: 16,
+  //   marginBottom: 10,
+  // },
+  // recentImage: {
+  //   width: 100,
+  //   height: 100,
+  //   marginRight: 10,
+  // },
+  predictButton: {
+    backgroundColor: 'green',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 20,
+    width: 200, // Adjust the width of the button
+    alignItems: 'center',
+    alignSelf: 'center'
   },
-  recentsText: {
+  predictButtonText: {
+    color: '#fff',
     fontSize: 16,
-    marginBottom: 10,
+    fontWeight: 'bold',
   },
-  recentImage: {
-    width: 100,
-    height: 100,
-    marginRight: 10,
+  chooseButton: {
+    backgroundColor: 'green',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 20,
+    width: 200, // Adjust the width of the button
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  chooseButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
+
+export default ImagePickerScreen;

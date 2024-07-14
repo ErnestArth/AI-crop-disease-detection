@@ -6,6 +6,7 @@ import SignupScreen from "./Screens/Signup";
 import LoginScreen from "./Screens/Login";
 import SuccessScreen from "./Screens/successScreen";
 import ImagePickerScreen from "./Screens/ImagePickerScreen";
+import ImageProcessingScreen from './Screens/ImageProcessingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,19 +14,21 @@ const Stack = createNativeStackNavigator();
 function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={require('./assets/farm1.jpg')} style={styles.image} />
-      <View style={styles.buttonContainer}>
-        <CustomButton
+      <ImageBackground source={require('./assets/farm1.jpg')} style={styles.image} >
+        <View style={styles.overlay}>
+          <Image source={require('./assets/logo.png')} style={styles.logo} />
+          <CustomButton
           label='Sign-Up'
           onPress={() => navigation.navigate('Sign-Up')}
           style={styles.signUpButton}
-        />
-        <CustomButton
+          />
+          <CustomButton
           label='Already have an account'
           onPress={() => navigation.navigate('Login')}
           style={styles.signInButton}
-        />
-      </View>
+          />
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -39,6 +42,7 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Success" component={SuccessScreen} />
         <Stack.Screen name="ImagePicker" component={ImagePickerScreen} />
+        <Stack.Screen name="ImageProcessing" component={ImageProcessingScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -47,30 +51,36 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  image: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  image: {
-    height: '70%',
-    flex: 1,
-  },
-  buttonContainer: {
-    width: '100%',
-    padding: 20,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    // borderTopLeftRadius: 40
-  },
   signUpButton: {
-    backgroundColor: 'green',
+    backgroundColor: 'darkgreen',
     marginBottom: 10,
-    width: '50%',
+    width: '40%',
     borderRadius: 40,
   },
   signInButton: {
-    backgroundColor: 'green',
+    backgroundColor: 'white',
     width: '70%',
     borderRadius: 40,
+    borderColor: 'darkgreen',
+    borderWidth: 2,
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Adjust the transparency as needed
+    width: '100%',
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 100,
   },
 });
 

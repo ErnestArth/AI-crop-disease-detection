@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
 
 const SignupScreen = ({navigation}) => {
   const [fullname, setFullname] = useState('');
@@ -19,7 +19,8 @@ const SignupScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Image source={require('../assets/logo.png')} style={styles.image} />
+      {/* <Text style={styles.title}>Sign Up</Text> */}
       <TextInput
         style={styles.input}
         placeholder="fullname"
@@ -51,10 +52,9 @@ const SignupScreen = ({navigation}) => {
       <Text style={styles.anotherTitle}>By tapping "continue" you are accepting our
         Terms & conditions as well as our privacy policies
       </Text>
-      <Button 
-        title="continue" 
-        onPress={handleSignup}
-        color="green" />
+      <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate('Success')}>
+        <Text style={styles.continueButtonText}>Continue</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -65,13 +65,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 16,
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 100,
-    textAlign: 'center',
-  },
+  // title: {
+  //   fontSize: 24,
+  //   marginBottom: 100,
+  //   textAlign: 'center',
+  // },
   input: {
-    height: 50,
+    height: 80,
     borderColor: 'green',
     borderWidth: 1,
     marginBottom: 16,
@@ -79,7 +79,30 @@ const styles = StyleSheet.create({
     borderRadius: 40
   },
   anotherTitle: {
-    marginTop: 140
+    marginTop: 50,
+    marginBottom: 10
+  },
+  continueButton: {
+    backgroundColor: '#28a745',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 20,
+    width: 200, // Adjust the width of the button
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  continueButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+    marginTop: 5,
+    alignSelf: 'center'
   }
 });
 
